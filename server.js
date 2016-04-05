@@ -3,25 +3,14 @@
  */
 "use strict";
 var express = require('express');
+var bodyParser = require('body-parser'); // it is a middleware which helps to parse body of json
+
 var app = express();
 var PORT = process.env.PORT || 8080;
-var todos = [
-  {
-  id: 1,
-  description: 'Meet for meeting',
-  completed: false
-  },
-  {
-    id: 2,
-    description: 'Re-shedule',
-    completed: false
-  },
-  {
-    id: 3,
-    description: 'Re-budgeting',
-    completed: true
-  }
-];
+var todos = [];
+var todoNextId = 1;
+
+app.use(bodyParser.json()); // using the application level body parser middleware
 
 app.get('/', function (req, res) {
   res.send('Todo API Root');
@@ -38,21 +27,28 @@ app.get('/todos/:id', function(req, res){
   var matchedTodo;
 
   todos.forEach(function(todo){
-
     if(todoId === todo.id) {
       matchedTodo = todo;
     }
   });
-
   if(matchedTodo){
     res.json(matchedTodo);
   }
   else{
     res.status(404).send();
   }
-
   //res.status(404).send();
+});
 
+//POST /todos
+app.post('/todos', function(req, res){
+   var body = req.body;
+  // add id field
+  body.id = todoNextId++;
+  // push body into array
+    todos.push(body);
+  console.log('todos: ' + todos);
+  res.json(todos);
 });
 
 
