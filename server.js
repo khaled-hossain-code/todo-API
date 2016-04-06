@@ -33,7 +33,6 @@ app.get('/todos/:id', function(req, res){
   else{
     res.status(404).send();
   }
-  //res.status(404).send();
 });
 
 //POST /todos
@@ -43,6 +42,7 @@ app.post('/todos', function(req, res){
   if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length ===0 )
   {
     return res.status(400).send();
+    console.log('Really!');
   }
 
   body.description = body.description.trim();
