@@ -125,6 +125,24 @@ app.put('/todos/:id', function (req, res) {
   });
 });
 
+//POST /users
+app.post('/users', function(req, res){
+  var body = _.pick(req.body,'email','password');
+
+  db.user.create(body).then(function(user){
+    res.json(user.toJSON());
+  },function(err){
+    res.status(400).json(err); // sent wrong data
+  });
+});
+
+//    .create(body).then(function (todo) {  //db.todo holds the model inside db.js file thats why it can create
+//  res.json(todo.toJSON());
+//}, function (e) {
+//  res.status(400).json(e);
+//});
+
+
 db.sequelize.sync().then(function () {
   app.listen(PORT, function () {
     console.log('Todo App running on PORT: ' + PORT);
