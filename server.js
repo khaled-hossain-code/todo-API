@@ -81,16 +81,15 @@ app.delete('/todos/:id', function (req, res) {
 
   db.todo.destroy({
     where: where
-  }).then(function (rowsDeleted){
-    if(rowsDeleted === 0)
-    {
+  }).then(function (rowsDeleted) {
+    if (rowsDeleted === 0) {
       res.status(404).json({
         error: 'No todo with id ' + todoId
       });
-    }else{
+    } else {
       res.status(204).send();
     }
-  },function(){
+  }, function () {
     res.status(500).send();
   });
 });
@@ -109,39 +108,31 @@ app.put('/todos/:id', function (req, res) {
     attributes.description = body.description;
   }
 
-  db.todo.findById(todoId).then(function(todo){
-    if(todo)
-    {
-      todo.update(attributes).then(function(todo){
+  db.todo.findById(todoId).then(function (todo) {
+    if (todo) {
+      todo.update(attributes).then(function (todo) {
         res.json(todo.toJSON());
-      }, function(e){
+      }, function (e) {
         res.status(400).json(e);
       });
-    }else{
+    } else {
       res.status(404).send();
     }
-  }, function(){
+  }, function () {
     res.status(500).send();
   });
 });
 
 //POST /users
-app.post('/users', function(req, res){
-  var body = _.pick(req.body,'email','password');
+app.post('/users', function (req, res) {
+  var body = _.pick(req.body, 'email', 'password');
 
-  db.user.create(body).then(function(user){
-    res.json(user.toJSON());
-  },function(err){
+  db.user.create(body).then(function (user) {
+    res.json(user.toPublicJSON());
+  }, function (err) {
     res.status(400).json(err); // sent wrong data
   });
 });
-
-//    .create(body).then(function (todo) {  //db.todo holds the model inside db.js file thats why it can create
-//  res.json(todo.toJSON());
-//}, function (e) {
-//  res.status(400).json(e);
-//});
-
 
 db.sequelize.sync().then(function () {
   app.listen(PORT, function () {
