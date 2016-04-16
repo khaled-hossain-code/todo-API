@@ -23,47 +23,38 @@ var Todo = sequelize.define('todo', {
   }
 });
 
-//sequelize.sync({force:true}).then(function(){
-//this one will be used when wants to delete all the existing database and create from scratch
-
-//this is adding to existing database or creating if not any
-sequelize.sync().then(function () {
-  console.log('Everything is synced');
-   Todo.findById(2).then(function(todo){
-    if(todo){
-      console.log(todo.toJSON());
-    }else{
-      console.log("item not found");
-    }
-   });
+var User = sequelize.define('user',{
+  email: Sequelize.STRING
 });
 
- /* Todo.create({
-    description: 'Learn sqlite3',
-    completed: true
-  }).then(function (todo) {
-    return Todo.create({
-      description: 'learn orm'
-    });
-  }).then (function () {
-    //return Todo.findById(1);   //to find a single object with its id
-    return Todo.findAll({
-      where: {
-        //completed: false   //if need to find using boolean fields
-        description: {
-          $like: '%orm%'
-        }
-      }
-    });
-  }).then(function (todos) {
-    if (todos) {
-      todos.forEach(function (todo) {
-        console.log(todo.toJSON());
+Todo.belongsTo(User);
+User.hasMany(Todo);
+
+//this is adding to existing database or creating if not any
+sequelize.sync(
+//    {force:true}
+).then(function () {
+  console.log('Everything is synced');
+
+  User.findById(1).then(function(user){
+    user.getTodos({
+      where: {completed: false}
+    }).then(function(todos){
+      todos.forEach(function(todos){
+        console.log(todos.toJSON())
       });
-    } else {
-      console.log('no todo found!');
-    }
-  }).catch(function (e) {
-    console.log(e);
+    });
   });
-});*/
+  /*User.create({
+    email:'khaled@idd.com'
+  }).then(function(){
+    return Todo.create({
+      description: 'API design'
+    });
+  }).then(function(todo){
+    User.findById(1).then(function(user){
+      user.addTodo(todo);
+    });
+  });*/
+
+});
